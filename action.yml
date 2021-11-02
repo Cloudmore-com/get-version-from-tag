@@ -1,0 +1,43 @@
+name: Set variables
+description: Set some useful variables
+inputs:
+  release_production_tag:
+    description: Release-production latest tag
+    default: release-production-eu
+    required: true
+outputs:
+  prodVersion:
+    description: Current production version
+    value: ${{ steps.version.outputs.prodVersion }}
+  masterVersion:
+    description: Master version. must be higher than current prod
+    value: ${{ steps.version.outputs.masterVersion }}
+  hotfixVersion:
+    description: Hotfix version for current prod version
+    value: ${{ steps.version.outputs.hotfixVersion }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/github-script@v5
+      name: Set version
+      id: version
+      with:
+        script: |
+          const prodTagName = '${{ inputs.release_production_tag }}'
+          const tags = await github.rest.repos.listTags({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
+          prodTag = tags.data.find(t => t.name == prodTagName)
+          releaseTag = tags.data.find(t => (t.commit.sha == prodTag.commit.sha) && (t.name != prodTag.name) )
+          console.log('releaseTag',releaseTag)
+          const prodVersion = releaseTag.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
+          const [a,b,c] = prodVersion.split('.')
+          const masterVersion = [a,+b + 1, 0].join('.')
+          const hotfixVersion = [a,b,+c + 1].join('.')
+          console.log('prodVersion',prodVersion)
+          console.log('masterVersion',masterVersion)
+          console.log('hotfixVersion',hotfixVersion)
+          console.log(`"::set-output name=prod::${prodVersion}"`)
+          console.log(`"::set-output name=master::${masterVersion}"`)
+          console.log(`"::set-output name=hotfix::${hotfixVersion}"`)
