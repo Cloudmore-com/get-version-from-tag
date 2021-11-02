@@ -28,20 +28,19 @@ runs:
           const repo = context.repo.repo
           const tags = await github.rest.repos.listTags({ owner, repo });
           const branches = await github.rest.repos.listBranches({ owner, repo })
-          console.log('branches',branches)
+          console.log('branches',branches.data)
+          const getVersionArr = (str) => str.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0].split('.')
 
-          const lastReleaseBranch = branches.data.sort((a,b) => b.name.split('.').join('') - a.name.split('.').join('') )[0]
+          const lastReleaseBranch = branches.data.sort((a,b) => getVersionArr(b.name).join('') - getVersionArr(a.name).join('') )[0]
           console.log('lastReleaseBranch',lastReleaseBranch)
-          const latestReleaseBranchVersion = lastReleaseBranch.name.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
-          const [x,y,z] = latestReleaseBranchVersion.split('.')
+          const [x,y,z] = getVersionArr(lastReleaseBranch.name)
           const masterVersion = [z,+y + 1, 0].join('.')
           console.log('masterVersion',masterVersion)
 
           prodTag = tags.data.find(t => t.name == prodTagName)
           releaseTag = tags.data.find(t => (t.commit.sha == prodTag.commit.sha) && (t.name != prodTag.name) )
           console.log('releaseTag',releaseTag)
-          const prodVersion = releaseTag.name.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
-          const [a,b,c] = prodVersion.split('.')
+          const [a,b,c] = getVersionArr(releaseTag.name)
           const hotfixVersion = [a,b,+c + 1].join('.')
           console.log('prodVersion',prodVersion)
           console.log('hotfixVersion',hotfixVersion)
