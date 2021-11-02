@@ -41,6 +41,7 @@ runs:
           releaseTag = tags.data.find(t => (t.commit.sha == prodTag.commit.sha) && (t.name != prodTag.name) )
           console.log('releaseTag',releaseTag)
           const [a,b,c] = getVersionArr(releaseTag.name)
+          const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
           console.log('prodVersion',prodVersion)
           console.log('hotfixVersion',hotfixVersion)
