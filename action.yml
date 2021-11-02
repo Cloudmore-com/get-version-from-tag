@@ -24,10 +24,15 @@ runs:
       with:
         script: |
           const prodTagName = '${{ inputs.release_production_tag }}'
-          const tags = await github.rest.repos.listTags({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-          });
+          const owner = context.repo.owner
+          const repo = context.repo.repo
+          const tags = await github.rest.repos.listTags({ owner, repo });
+          const branches = await github.rest.repos.listBranches({ owner, repo })
+          console.log('branches',branches)
+
+          const lastReleaseBranch = branches.data.sort((a,b) => b.name.split('.').join('') - a.name.split('.').join('') )[0]
+          console.log('lastReleaseBranch',lastReleaseBranch)
+          
           prodTag = tags.data.find(t => t.name == prodTagName)
           releaseTag = tags.data.find(t => (t.commit.sha == prodTag.commit.sha) && (t.name != prodTag.name) )
           console.log('releaseTag',releaseTag)
