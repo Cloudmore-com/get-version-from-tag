@@ -42,8 +42,8 @@ runs:
           const [m1,m2,m3] = getVersionArr(HighestVersionReleaseBranch.name)
           const masterVersion = [m1,+m2 + 1, 0].join('.')
 
-          releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
-          const latestDeployedReleaseTag = allTags.data.find(t => (t.commit.sha == releaseProductionTag.commit.sha) && (t.name != releaseProductionTag.name) && getVersionArr(latestDeployedReleaseTag.name) )
+          const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
+          const latestDeployedReleaseTag = allTags.data.find(t => (t.commit.sha == releaseProductionTag.commit.sha) && (t.name != releaseProductionTag.name) && getVersionArr(t.name) )
           console.log('latestDeployedReleaseTag',latestDeployedReleaseTag)
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
           const prodVersion = [a,b,c].join('.')
