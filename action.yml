@@ -34,7 +34,6 @@ runs:
           console.log('lastReleaseBranch',lastReleaseBranch)
           const [m1,m2,m3] = getVersionArr(lastReleaseBranch.name)
           const masterVersion = [m1,+m2 + 1, 0].join('.')
-          console.log('masterVersion',masterVersion)
 
           prodTag = tags.data.find(t => t.name == prodTagName)
           releaseTag = tags.data.find(t => (t.commit.sha == prodTag.commit.sha) && (t.name != prodTag.name) )
@@ -43,6 +42,7 @@ runs:
           const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
           console.log('prodVersion',prodVersion)
+          console.log('masterVersion',masterVersion)
           console.log('hotfixVersion',hotfixVersion)
           console.log(`::set-output name=prodVersion::${prodVersion}`)
           console.log(`::set-output name=masterVersion::${masterVersion}`)
