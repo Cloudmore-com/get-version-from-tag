@@ -37,17 +37,24 @@ runs:
               return false
             }
           }
-          const HighestVersionReleaseBranch = branches.data.filter(br => getVersionArr(br.name)).sort((a,b) => getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))[0]
+          const sortVersions = (a,b) => getVersionArr(b.name).join('') - getVersionArr(a.name).join('')
+          const getLatestDeployedReleaseTag = (arr,sha,name) => {
+          const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
+          return onlyTagsWithVersions.sort(sortVersions)[0]
+          }
+
+          const HighestVersionReleaseBranch = branches.data.filter(br => getVersionArr(br.name)).sort(sortVersions)[0]
           console.log('HighestVersionReleaseBranch',HighestVersionReleaseBranch)
           const [m1,m2,m3] = getVersionArr(HighestVersionReleaseBranch.name)
           const masterVersion = [m1,+m2 + 1, 0].join('.')
 
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
-          const latestDeployedReleaseTag = allTags.data.find(t => (t.commit.sha == releaseProductionTag.commit.sha) && (t.name != releaseProductionTag.name) && getVersionArr(t.name) )
+          const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
           console.log('latestDeployedReleaseTag',latestDeployedReleaseTag)
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
           const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
+
           console.log('masterVersion',masterVersion)
           console.log('prodVersion',prodVersion)
           console.log('hotfixVersion',hotfixVersion)
