@@ -37,7 +37,8 @@ runs:
               return false
             }
           }
-          const sortVersions = (a,b) => getVersionArr(b.name).join('') - getVersionArr(a.name).join('')
+          const sortVersions = (a,b) => (getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))
+
           const getLatestDeployedReleaseTag = (arr,sha,name) => {
           const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
           return onlyTagsWithVersions.sort(sortVersions)[0]
