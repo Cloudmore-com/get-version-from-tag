@@ -46,13 +46,13 @@ runs:
 
           const highestVersionReleaseBranch = branches.data.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
 
-          console.log('highestVersionReleaseBranch',highestVersionReleaseBranch)
+          console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
           const masterVersion = [m1,+m2 + 1, 0].join('.')
 
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
           const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
-          console.log('latestDeployedReleaseTag',latestDeployedReleaseTag)
+          console.log('latestDeployedReleaseTag:',latestDeployedReleaseTag.name)
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
           const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
