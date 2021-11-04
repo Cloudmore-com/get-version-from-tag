@@ -27,8 +27,7 @@ runs:
           const owner = context.repo.owner
           const repo = context.repo.repo
           const allTags = await github.rest.repos.listTags({ owner, repo });
-          const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc' })
-          console.log('branches',JSON.stringify(branches,2,4))
+          const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc', sort: 'updated' })
           const getVersionArr = (str) => {
             try{
               const versionStr = str.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
@@ -39,25 +38,14 @@ runs:
             }
           }
           const sortVersions = (a,b) => (getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))
-          console.log('1')
           const getLatestDeployedReleaseTag = (arr,sha,name) => {
             const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
             return onlyTagsWithVersions.sort(sortVersions)[0]
           }
-          console.log('2')
 
-          const HighestVersionReleaseBranch = branches.data.filter((br) => {
-            console.log('test branch',br.name)
-            const result = getVersionArr(br.name) && br.name.includes('release-')
-            if (result){
-              console.log('filter result',result)
-            }
-            return result
-          }).sort(sortVersions)[0]
-          console.log('3')
+          const HighestVersionReleaseBranch = branches.data.filter((br) => ( br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
           console.log('HighestVersionReleaseBranch',HighestVersionReleaseBranch)
           const [m1,m2,m3] = getVersionArr(HighestVersionReleaseBranch.name)
-          console.log('4')
           const masterVersion = [m1,+m2 + 1, 0].join('.')
 
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
