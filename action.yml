@@ -45,7 +45,14 @@ runs:
           }
           console.log('2')
 
-          const HighestVersionReleaseBranch = branches.data.filter((br) => ( br.name.includes('release-') && getVersionArr(br.name) )).sort(sortVersions)[0]
+          const HighestVersionReleaseBranch = branches.data.filter((br) => {
+            console.log('test branch',br.name)
+            const result = getVersionArr(br.name) && br.name.includes('release-')
+            if (result){
+              console.log('filter result',result)
+            }
+            return result
+          }).sort(sortVersions)[0]
           console.log('3')
           console.log('HighestVersionReleaseBranch',HighestVersionReleaseBranch)
           const [m1,m2,m3] = getVersionArr(HighestVersionReleaseBranch.name)
