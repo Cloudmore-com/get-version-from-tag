@@ -38,15 +38,18 @@ runs:
             }
           }
           const sortVersions = (a,b) => (getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))
-
+          console.log('1')
           const getLatestDeployedReleaseTag = (arr,sha,name) => {
-          const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
-          return onlyTagsWithVersions.sort(sortVersions)[0]
+            const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
+            return onlyTagsWithVersions.sort(sortVersions)[0]
           }
+          console.log('2')
 
           const HighestVersionReleaseBranch = branches.data.filter((br) => ( br.name.includes('release-') && getVersionArr(br.name) )).sort(sortVersions)[0]
+          console.log('3')
           console.log('HighestVersionReleaseBranch',HighestVersionReleaseBranch)
           const [m1,m2,m3] = getVersionArr(HighestVersionReleaseBranch.name)
+          console.log('4')
           const masterVersion = [m1,+m2 + 1, 0].join('.')
 
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
