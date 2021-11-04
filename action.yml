@@ -27,7 +27,7 @@ runs:
           const owner = context.repo.owner
           const repo = context.repo.repo
           const allTags = await github.rest.repos.listTags({ owner, repo });
-          const branches = await github.rest.repos.listBranches({ owner, repo })
+          const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc' })
           console.log('branches',JSON.stringify(branches,2,4))
           const getVersionArr = (str) => {
             try{
