@@ -26,7 +26,7 @@ runs:
           const releaseProductionTagName = '${{ inputs.release_production_tag }}'
           const owner = context.repo.owner
           const repo = context.repo.repo
-          const allTags = await github.rest.repos.listTags({ owner, repo });
+          const allTags = await github.rest.repos.listTags({ owner, repo, per_page: 100 });
           const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc', sort: 'updated' })
           const getVersionArr = (str) => {
             try{
@@ -40,7 +40,14 @@ runs:
           const sortVersions = (a,b) => (getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))
 
           const getLatestDeployedReleaseTag = (arr,sha,name) => {
-            const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
+            const onlyTagsWithVersions = arr.filter(t => {
+              console.log('t',t)
+              console.log('getVersionArr(t.name)',getVersionArr(t.name))
+              console.log('t.commit.sha == sha',t.commit.sha == sha)
+              console.log('t.name != name',t.name != name)
+              return getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name)
+            })
+            console.log('onlyTagsWithVersions',onlyTagsWithVersions)
             return onlyTagsWithVersions.sort(sortVersions)[0]
           }
 
@@ -49,15 +56,20 @@ runs:
           console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
           const masterVersion = [m1,+m2 + 1, 0].join('.')
+          console.log('masterVersion',masterVersion)
 
+          console.log('allTags',allTags)
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
+          console.log('releaseProductionTag',releaseProductionTag)
+          console.log('1')
           const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
+          console.log('2')
           console.log('latestDeployedReleaseTag:',latestDeployedReleaseTag.name)
+          console.log('3')
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
           const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
 
-          console.log('masterVersion',masterVersion)
           console.log('prodVersion',prodVersion)
           console.log('hotfixVersion',hotfixVersion)
           console.log(`::set-output name=prodVersion::${prodVersion}`)
