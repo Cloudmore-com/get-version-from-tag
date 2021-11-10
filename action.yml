@@ -49,15 +49,19 @@ runs:
           console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
           const masterVersion = [m1,+m2 + 1, 0].join('.')
-
+          console.log('masterVersion',masterVersion)
+        
+          console.log('allTags',allTags)
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
+          console.log('1')
           const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
+          console.log('2')
           console.log('latestDeployedReleaseTag:',latestDeployedReleaseTag.name)
+          console.log('3')
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
           const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
 
-          console.log('masterVersion',masterVersion)
           console.log('prodVersion',prodVersion)
           console.log('hotfixVersion',hotfixVersion)
           console.log(`::set-output name=prodVersion::${prodVersion}`)
