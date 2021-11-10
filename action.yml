@@ -40,7 +40,13 @@ runs:
           const sortVersions = (a,b) => (getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))
 
           const getLatestDeployedReleaseTag = (arr,sha,name) => {
-            const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
+            const onlyTagsWithVersions = arr.filter(t => {
+              console.log('t',t)
+              console.log('getVersionArr(t.name)',getVersionArr(t.name))
+              console.log('t.commit.sha == sha',t.commit.sha == sha)
+              console.log('t.name != name',t.name != name)
+              getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name)
+            })
             console.log('onlyTagsWithVersions',onlyTagsWithVersions)
             return onlyTagsWithVersions.sort(sortVersions)[0]
           }
@@ -54,6 +60,7 @@ runs:
 
           console.log('allTags',allTags)
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
+          console.log('releaseProductionTag',releaseProductionTag)
           console.log('1')
           const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
           console.log('2')
