@@ -39,16 +39,14 @@ runs:
           }
           const sortVersions = (a,b) => (getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))
 
-          const getLatestDeployedReleaseTag = (arr,sha,name) => {
-            const onlyTagsWithVersions = arr.filter(t => {
-              console.log('t',t)
-              console.log('getVersionArr(t.name)',getVersionArr(t.name))
-              console.log('t.commit.sha == sha',t.commit.sha == sha)
-              console.log('t.name != name',t.name != name)
-              return getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name)
+          const getLatestDeployedReleaseTag = (tags,production_tag_sha,name) => {
+            const result = tags.filter(t => {
+              return getVersionArr(t.name) && (t.commit.sha == production_tag_sha) && (t.name != name)
             })
-            console.log('onlyTagsWithVersions',onlyTagsWithVersions)
-            return onlyTagsWithVersions.sort(sortVersions)[0]
+            if (!result.length) {
+              console.error('!!! ERROR: Cannot find latest deployed release or hotfix tag. Please check that release-production tag sha and deployed release tag are the same.')
+            }
+            return result.sort(sortVersions)[0]
           }
 
           const highestVersionReleaseBranch = branches.data.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
@@ -58,14 +56,12 @@ runs:
           const masterVersion = [m1,+m2 + 1, 0].join('.')
           console.log('masterVersion',masterVersion)
 
-          console.log('allTags',allTags)
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
           console.log('releaseProductionTag',releaseProductionTag)
-          console.log('1')
+        
           const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
-          console.log('2')
           console.log('latestDeployedReleaseTag:',latestDeployedReleaseTag.name)
-          console.log('3')
+      
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
           const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
