@@ -41,6 +41,7 @@ runs:
 
           const getLatestDeployedReleaseTag = (arr,sha,name) => {
             const onlyTagsWithVersions = arr.filter(t => getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name) )
+            console.log('onlyTagsWithVersions',onlyTagsWithVersions)
             return onlyTagsWithVersions.sort(sortVersions)[0]
           }
 
@@ -50,7 +51,7 @@ runs:
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
           const masterVersion = [m1,+m2 + 1, 0].join('.')
           console.log('masterVersion',masterVersion)
-        
+
           console.log('allTags',allTags)
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
           console.log('1')
