@@ -45,7 +45,7 @@ runs:
               console.log('getVersionArr(t.name)',getVersionArr(t.name))
               console.log('t.commit.sha == sha',t.commit.sha == sha)
               console.log('t.name != name',t.name != name)
-              getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name)
+              return getVersionArr(t.name) && (t.commit.sha == sha) && (t.name != name)
             })
             console.log('onlyTagsWithVersions',onlyTagsWithVersions)
             return onlyTagsWithVersions.sort(sortVersions)[0]
