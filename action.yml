@@ -26,7 +26,7 @@ runs:
           const releaseProductionTagName = '${{ inputs.release_production_tag }}'
           const owner = context.repo.owner
           const repo = context.repo.repo
-          const allTags = await github.rest.repos.listTags({ owner, repo });
+          const allTags = await github.rest.repos.listTags({ owner, repo, per_page: 100 });
           const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc', sort: 'updated' })
           const getVersionArr = (str) => {
             try{
