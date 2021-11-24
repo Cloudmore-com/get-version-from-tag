@@ -15,6 +15,10 @@ outputs:
   hotfixVersion:
     description: Hotfix version for current prod version
     value: ${{ steps.version.outputs.hotfixVersion }}
+  latestDeployedReleaseTag:
+    description: Current production release Tag
+    value: ${{ steps.version.outputs.latestDeployedReleaseTag }}
+
 runs:
   using: composite
   steps:
@@ -71,3 +75,4 @@ runs:
           console.log(`::set-output name=prodVersion::${prodVersion}`)
           console.log(`::set-output name=masterVersion::${masterVersion}`)
           console.log(`::set-output name=hotfixVersion::${hotfixVersion}`)
+          console.log(`::set-output name=latestDeployedReleaseTag::${latestDeployedReleaseTag.name}`)
