@@ -18,6 +18,9 @@ outputs:
   latestDeployedReleaseTag:
     description: Current production release Tag
     value: ${{ steps.version.outputs.latestDeployedReleaseTag }}
+  currentReleaseVersion:
+    description: Current release version
+    value: ${{ steps.version.outputs.currentReleaseVersion }}
 
 runs:
   using: composite
@@ -57,6 +60,7 @@ runs:
 
           console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
+          const currentReleaseVersion = [m1,m2,m3].join('.')
           const masterVersion = [m1,+m2 + 1, 0].join('.')
           console.log('masterVersion',masterVersion)
 
@@ -75,4 +79,5 @@ runs:
           console.log(`::set-output name=prodVersion::${prodVersion}`)
           console.log(`::set-output name=masterVersion::${masterVersion}`)
           console.log(`::set-output name=hotfixVersion::${hotfixVersion}`)
+          console.log(`::set-output name=currentReleaseVersion::${currentReleaseVersion}`)
           console.log(`::set-output name=latestDeployedReleaseTag::${latestDeployedReleaseTag.name}`)
