@@ -21,6 +21,9 @@ outputs:
   currentReleaseVersion:
     description: Current release version
     value: ${{ steps.version.outputs.currentReleaseVersion }}
+  highestCandidateBranch:
+    description: Highest candidate branch name
+    value: ${{ steps.version.outputs.highestCandidateBranch }}
 
 runs:
   using: composite
