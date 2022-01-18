@@ -87,6 +87,7 @@ runs:
           console.log('prodVersion',prodVersion)
           console.log('hotfixVersion',hotfixVersion)
           console.log('currentReleaseVersion',currentReleaseVersion)
+          console.log('highestCandidateBranch',highestCandidateBranch.name)
           console.log(`::set-output name=prodVersion::${prodVersion}`)
           console.log(`::set-output name=masterVersion::${masterVersion}`)
           console.log(`::set-output name=hotfixVersion::${hotfixVersion}`)
