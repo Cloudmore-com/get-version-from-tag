@@ -38,7 +38,7 @@ runs:
 
           isPreRelease = (releases, release_tag_name) => {
            const release = releases.find((r) => r.tag_name === release_tag_name)
-           if ('prerelease' in release) return release.prerelease
+           if (release && 'prerelease' in release) return release.prerelease
            return false
           }
 
