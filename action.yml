@@ -37,7 +37,11 @@ runs:
           const allReleases = await github.rest.repos.listReleases({ owner, repo, per_page: 100 });
           console.log('allReleases', allReleases)
 
-          isPreRelease = (releases, release_tag_name) => releases.find((r) => r.tag_name === release_tag_name)?.prerelease
+          isPreRelease = (releases, release_tag_name) => {
+           const release = releases.find((r) => r.tag_name === release_tag_name)
+           if ('prerelease' in release) return release.prerelease
+           return false
+          }
 
           const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc', sort: 'updated' })
           const getVersionArr = (str) => {
