@@ -46,14 +46,21 @@ runs:
           }
 
           const getAllBranches = async () => {
-              let page = 1 
+              let page = 1
+              let nextPage = 2
               let allBranches = []
-              console.log("allBranches length:", allBranches.length)
-              while(true){
+              const next = async () => {
+                if (page < nextPage) {
                   const { data } = await github.rest.repos.listBranches({ owner, repo, per_page: 30, page })
-                  if (!(data.length)) { break }
+                  if (data.length) {
+                    allBranches = [...allBranches, ...data]
+                    console.log("allBranches length:", allBranches.length)
+                    nextPage++
+                  }
                   page++
-                  allBranches = [...allBranches, ...data]
+                  next()
+                }
+                await next()
               }
               return allBranches
           }
