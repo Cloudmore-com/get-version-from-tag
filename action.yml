@@ -39,7 +39,7 @@ runs:
           const allTags = await github.rest.repos.listTags({ owner, repo, per_page: 100 });
           const allReleases = await github.rest.repos.listReleases({ owner, repo, per_page: 100 });
 
-          isPreRelease = (releases, release_tag_name) => {
+          const isPreRelease = (releases, release_tag_name) => {
            const release = releases.find((r) => r.tag_name === release_tag_name)
            if (release && 'prerelease' in release) return release.prerelease
            return false
@@ -49,7 +49,7 @@ runs:
             let page = 1
             let nextPage = 2
             let allBranches = []
-            const next = async () => {
+            const next () => {
               if (page < nextPage) {
                 const res = await github.rest.repos.listBranches({ owner, repo, per_page: 30, page })
                 if (res.data.length) {
@@ -60,7 +60,7 @@ runs:
                 page++
                 next()
               }
-              await next()
+              next()
             }
             return allBranches
           }
