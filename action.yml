@@ -49,7 +49,7 @@ runs:
             let page = 1
             let nextPage = 2
             let allBranches = []
-            const next = () => {
+            const next = async () => {
               if (page < nextPage) {
                 const res = await github.rest.repos.listBranches({ owner, repo, per_page: 30, page })
                 if (res.data.length) {
@@ -58,10 +58,10 @@ runs:
                   nextPage++
                 }
                 page++
-                next()
               }
-              next()
+              await next()
             }
+            await next()
             return allBranches
           }
 
