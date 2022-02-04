@@ -51,9 +51,9 @@ runs:
             let allBranches = []
             const next = async () => {
               if (page < nextPage) {
-                const { data } = await github.rest.repos.listBranches({ owner, repo, per_page: 30, page })
-                if (data.length) {
-                  allBranches = allBranches.concat(data)
+                const res = await github.rest.repos.listBranches({ owner, repo, per_page: 30, page })
+                if (res.data.length) {
+                  allBranches = allBranches.concat(res.data)
                   # console.log("allBranches length:", allBranches.length)
                   nextPage++
                 }
