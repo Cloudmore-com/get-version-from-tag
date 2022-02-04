@@ -86,10 +86,10 @@ runs:
 
           const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
           console.log('releaseProductionTag',releaseProductionTag)
-
+        
           const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
           console.log('latestDeployedReleaseTag:',latestDeployedReleaseTag.name)
-
+      
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
           const prodVersion = [a,b,c].join('.')
           const hotfixVersion = [a,b,+c + 1].join('.')
