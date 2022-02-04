@@ -46,7 +46,7 @@ runs:
           }
 
           const branches = await octokit.paginate(
-            github.rest.repos.listBranches({ owner, repo, per_page: 100 })
+            github.rest.repos.listBranches({ owner, repo, per_page: 100 }),
             response => response.data
           )
           console.log('total branches', branches )
