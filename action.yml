@@ -45,7 +45,7 @@ runs:
            return false
           }
 
-          const async getAllBranches() => {
+          const getAllBranches = async () => {
               let page = 1 
               let allBranches = []
               console.log("allBranches length:", allBranches.length)
