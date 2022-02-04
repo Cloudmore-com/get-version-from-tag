@@ -45,13 +45,29 @@ runs:
            return false
           }
 
-          const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc', sort: 'updated' })
+          const async getAllBranches() => {
+              let page = 1 
+              let allBranches = []
+              console.log("allBranches length:", allBranches.length)
+              while(true){
+                  const { data } = await github.rest.repos.listBranches({ owner, repo, per_page: 30, page })
+                  if (!(data.length)) { break }
+                  page++
+                  allBranches = [...allBranches, ...data]
+              }
+              return allBranches
+          }
+
+          const branches = await getAllBranches()
+          console.log('total branches:', branches.length)
+
+
           const getVersionArr = (str) => {
             try{
               const versionStr = str.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
               return versionStr.split('.')
             } catch {
-              console.log('String does not contain version:',str)
+              # console.log('String does not contain version:',str)
               return false
             }
           }
@@ -67,9 +83,9 @@ runs:
             return result.sort(sortVersions)[0]
           }
 
-          const highestVersionReleaseBranch = branches.data.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
+          const highestVersionReleaseBranch = branches.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
 
-          const highestCandidateBranch = branches.data.filter(br => (br.name.includes('release-') || br.name.includes('hotfix-')) && getVersionArr(br.name) && isPreRelease(allReleases.data, br.name) ).sort(sortVersions)[0]
+          const highestCandidateBranch = branches.filter(br => (br.name.includes('release-') || br.name.includes('hotfix-')) && getVersionArr(br.name) && isPreRelease(allReleases.data, br.name) ).sort(sortVersions)[0]
 
           console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
