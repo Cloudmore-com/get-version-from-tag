@@ -45,7 +45,7 @@ runs:
            return false
           }
 
-          const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, direction: 'asc', sort: 'updated' })
+          const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, protected: true, direction: 'asc', sort: 'updated' })
           const getVersionArr = (str) => {
             try{
               const versionStr = str.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
