@@ -49,9 +49,8 @@ runs:
             github.rest.repos.listBranches,
             { owner, repo }
           )
-          console.log('total branches', branches )
-          console.log('length branches', branches.data.length )
 
+          console.log('total branches', branches.length )
 
           const getVersionArr = (str) => {
             try{
@@ -74,9 +73,9 @@ runs:
             return result.sort(sortVersions)[0]
           }
 
-          const highestVersionReleaseBranch = branches.data.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
+          const highestVersionReleaseBranch = branches.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
 
-          const highestCandidateBranch = branches.data.filter(br => (br.name.includes('release-') || br.name.includes('hotfix-')) && getVersionArr(br.name) && isPreRelease(allReleases.data, br.name) ).sort(sortVersions)[0]
+          const highestCandidateBranch = branches.filter(br => (br.name.includes('release-') || br.name.includes('hotfix-')) && getVersionArr(br.name) && isPreRelease(allReleases.data, br.name) ).sort(sortVersions)[0]
 
           console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
