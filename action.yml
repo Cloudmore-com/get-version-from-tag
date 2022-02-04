@@ -39,13 +39,19 @@ runs:
           const allTags = await github.rest.repos.listTags({ owner, repo, per_page: 100 });
           const allReleases = await github.rest.repos.listReleases({ owner, repo, per_page: 100 });
 
-          isPreRelease = (releases, release_tag_name) => {
+          const isPreRelease = (releases, release_tag_name) => {
            const release = releases.find((r) => r.tag_name === release_tag_name)
            if (release && 'prerelease' in release) return release.prerelease
            return false
           }
 
-          const branches = await github.rest.repos.listBranches({ owner, repo, per_page: 100, protected: true, direction: 'asc', sort: 'updated' })
+          const branches = await github.paginate(
+            github.rest.repos.listBranches,
+            { owner, repo }
+          )
+
+          console.log('total branches', branches.length )
+
           const getVersionArr = (str) => {
             try{
               const versionStr = str.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
@@ -67,9 +73,9 @@ runs:
             return result.sort(sortVersions)[0]
           }
 
-          const highestVersionReleaseBranch = branches.data.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
+          const highestVersionReleaseBranch = branches.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
 
-          const highestCandidateBranch = branches.data.filter(br => (br.name.includes('release-') || br.name.includes('hotfix-')) && getVersionArr(br.name) && isPreRelease(allReleases.data, br.name) ).sort(sortVersions)[0]
+          const highestCandidateBranch = branches.filter(br => (br.name.includes('release-') || br.name.includes('hotfix-')) && getVersionArr(br.name) && isPreRelease(allReleases.data, br.name) ).sort(sortVersions)[0]
 
           console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
