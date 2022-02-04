@@ -47,7 +47,7 @@ runs:
 
           const branches = await github.paginate(
             github.rest.repos.listBranches,
-            { owner, repo, per_page: 100 },
+            { owner, repo, direction: 'asc', sort: 'updated' },
             response => response.data
           )
           console.log('total branches', branches )
