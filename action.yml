@@ -101,5 +101,5 @@ runs:
           console.log(`::set-output name=masterVersion::${masterVersion}`)
           console.log(`::set-output name=hotfixVersion::${hotfixVersion}`)
           console.log(`::set-output name=currentReleaseVersion::${currentReleaseVersion}`)
-          console.log(`::set-output name=latestDeployedReleaseTag::${latestDeployedReleaseTag.name}`)
+          console.log(`echo "latestDeployedReleaseTag=${latestDeployedReleaseTag.name}" >> $GITHUB_OUTPUT`)
           console.log(`::set-output name=highestCandidateBranch::${highestCandidateBranch.name}`)
