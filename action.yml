@@ -37,7 +37,7 @@ runs:
           const os = require("os")
           const fs = require("fs")
 
-          function setOutput(key, value) {
+          function setGithubOutput(key, value) {
              // Temporary hack until core actions library catches up with github new recommendations
              const outputs = process.env['GITHUB_OUTPUT']
              fs.appendFileSync(outputs, `${key}=${value}${os.EOL}`)
@@ -107,11 +107,9 @@ runs:
           console.log('hotfixVersion',hotfixVersion)
           console.log('currentReleaseVersion',currentReleaseVersion)
           console.log('highestCandidateBranch',highestCandidateBranch.name)
-          //console.log(`::set-output name=prodVersion::${prodVersion}`)
-          //console.log(`::set-output name=masterVersion::${masterVersion}`)
-          //console.log(`::set-output name=hotfixVersion::${hotfixVersion}`)
-          //console.log(`hotfixVersion=${hotfixVersion} >> \$GITHUB_OUTPUT`)
-          setOutput('highestCandidateBranch', highestCandidateBranch.name )
-          setOutput('hotfixVersion', hotfixVersion )
-          //console.log(`::set-output name=currentReleaseVersion::${currentReleaseVersion}`)
-          console.log(`::set-output name=highestCandidateBranch::${highestCandidateBranch.name}`)
+          setGithubOutput('prodVersion', prodVersion)
+          setGithubOutput('masterVersion', masterVersion)
+          setGithubOutput('hotfixVersion' , hotfixVersion)
+          setGithubOutput('highestCandidateBranch', highestCandidateBranch.name )
+          setGithubOutput('latestDeployedReleaseTag', latestDeployedReleaseTag.name )
+          setGithubOutput('currentReleaseVersion, currentReleaseVersion)
