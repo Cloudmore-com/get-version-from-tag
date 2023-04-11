@@ -33,7 +33,7 @@ runs:
       id: version
       with:
         script: |
-          var fs = require('fs')
+          const fs = require("fs")
           const releaseProductionTagName = '${{ inputs.release_production_tag }}'
           const owner = context.repo.owner
           const repo = context.repo.repo
