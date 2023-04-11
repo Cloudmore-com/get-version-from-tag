@@ -100,7 +100,7 @@ runs:
           //console.log(`::set-output name=prodVersion::${prodVersion}`)
           //console.log(`::set-output name=masterVersion::${masterVersion}`)
           //console.log(`::set-output name=hotfixVersion::${hotfixVersion}`)
-          console.log(`echo hotfixVersion=${hotfixVersion} >> $GITHUB_OUTPUT`)
+          console.log(`hotfixVersion=${hotfixVersion} >> $GITHUB_OUTPUT`)
           //console.log(`::set-output name=currentReleaseVersion::${currentReleaseVersion}`)
           console.log(`echo "latestDeployedReleaseTag=${latestDeployedReleaseTag.name}" >> $GITHUB_OUTPUT`)
           console.log(`::set-output name=highestCandidateBranch::${highestCandidateBranch.name}`)
