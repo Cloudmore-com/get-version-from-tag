@@ -112,4 +112,4 @@ runs:
           setGithubOutput('hotfixVersion' , hotfixVersion)
           setGithubOutput('highestCandidateBranch', highestCandidateBranch.name )
           setGithubOutput('latestDeployedReleaseTag', latestDeployedReleaseTag.name )
-          setGithubOutput('currentReleaseVersion, currentReleaseVersion)
+          setGithubOutput('currentReleaseVersion', currentReleaseVersion)
