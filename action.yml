@@ -39,8 +39,8 @@ runs:
 
           function setOutput(key, value) {
              // Temporary hack until core actions library catches up with github new recommendations
-             const output = process.env['GITHUB_OUTPUT']
-             fs.appendFileSync(output, `${key}=${value}${os.EOL}`)
+             const outputs = process.env['GITHUB_OUTPUT']
+             fs.appendFileSync(outputs, `${key}=${value}${os.EOL}`)
           }
 
           const releaseProductionTagName = '${{ inputs.release_production_tag }}'
