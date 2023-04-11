@@ -33,12 +33,11 @@ runs:
       id: version
       with:
         script: |
-
           const os = require("os")
           const fs = require("fs")
-
           function setGithubOutput(key, value) {
-             // Temporary hack until core actions library catches up with github new recommendations
+             // Temporary hack from (https://github.com/actions/toolkit/issues/1218)
+             // until core actions library catches up with github new recommendations
              const outputs = process.env['GITHUB_OUTPUT']
              fs.appendFileSync(outputs, `${key}=${value}${os.EOL}`)
           }
