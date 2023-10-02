@@ -86,9 +86,6 @@ runs:
           )
 
           const getLatestDeployedReleaseTag = (tags,production_tag_sha,name) => {
-            console.log("tags",tags)
-            console.log("production tag sha",production_tag_sha )
-            console.log("production tag name",name )
             const result = tags.filter(t => (
               getVersionArr(t.name,true) && (t.commit.sha == production_tag_sha) && (t.name != name)
             ))
