@@ -45,7 +45,11 @@ runs:
           const releaseProductionTagName = '${{ inputs.release_production_tag }}'
           const owner = context.repo.owner
           const repo = context.repo.repo
-          const allTags = await github.rest.repos.listTags({ owner, repo, per_page: 100 });
+          const allTags = await github.paginate(
+            github.rest.repos.listTags,
+            { owner, repo}
+          )
+
           const allReleases = await github.rest.repos.listReleases({ owner, repo, per_page: 100 });
 
           const isPreRelease = (releases, release_tag_name) => {
@@ -61,41 +65,53 @@ runs:
 
           console.log('total branches', branches.length )
 
-          const getVersionArr = (str) => {
+          //Parse Version tag to numbers
+          const getVersionArr = (str,check=false) => {
             try{
-              const versionStr = str.match(/(\d{1,3}.\d{1,3}.\d{1,3})/)[0]
+              console.log("branch name:", str)
+              const versionStr = str.match(/\\d{1,3}\.\\d{1,3}\.\\d{1,3}/)[0]
+              console.log("Verionstring split:", versionStr)
+              if (check) {
+                return true
+              }
               return versionStr.split('.')
             } catch {
               console.log('String does not contain version:',str)
               return false
             }
           }
-          const sortVersions = (a,b) => (getVersionArr(b.name).join('') - getVersionArr(a.name).join(''))
+
+          const sortVersions = (a,b) => (
+          getVersionArr(b.name).join('') - getVersionArr(a.name).join('')
+          )
 
           const getLatestDeployedReleaseTag = (tags,production_tag_sha,name) => {
-            const result = tags.filter(t => {
-              return getVersionArr(t.name) && (t.commit.sha == production_tag_sha) && (t.name != name)
-            })
+            console.log("tags",tags)
+            console.log("production tag sha",production_tag_sha )
+            console.log("production tag name",name )
+            const result = tags.filter(t => (
+              getVersionArr(t.name,true) && (t.commit.sha == production_tag_sha) && (t.name != name)
+            ))
             if (!result.length) {
               console.error('!!! ERROR: Cannot find latest deployed release or hotfix tag. Please check that release-production tag sha and deployed release tag are the same.')
             }
             return result.sort(sortVersions)[0]
           }
 
-          const highestVersionReleaseBranch = branches.filter(br => br.name.includes('release-') && getVersionArr(br.name) ).sort(sortVersions)[0]
+          const highestVersionReleaseBranch = branches.filter(br => br.name.includes('release-') && getVersionArr(br.name,true) ).sort(sortVersions)[0]
 
           const highestCandidateBranch = branches.filter(br => (br.name.includes('release-') || br.name.includes('hotfix-')) && getVersionArr(br.name) && isPreRelease(allReleases.data, br.name) ).sort(sortVersions)[0]
 
-          console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch.name)
+          console.log('highestVersionReleaseBranch:',highestVersionReleaseBranch)
           const [m1,m2,m3] = getVersionArr(highestVersionReleaseBranch.name)
           const currentReleaseVersion = [m1,m2,m3].join('.')
           const masterVersion = [m1,+m2 + 1, 0].join('.')
           console.log('masterVersion',masterVersion)
 
-          const releaseProductionTag = allTags.data.find(t => t.name == releaseProductionTagName)
+          const releaseProductionTag = allTags.find(t => t.name == releaseProductionTagName)
           console.log('releaseProductionTag',releaseProductionTag)
         
-          const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags.data,releaseProductionTag.commit.sha,releaseProductionTag.name)
+          const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags,releaseProductionTag.commit.sha,releaseProductionTag.name)
           console.log('latestDeployedReleaseTag:',latestDeployedReleaseTag.name)
       
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
