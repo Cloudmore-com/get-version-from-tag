@@ -68,9 +68,7 @@ runs:
           //Parse Version tag to numbers
           const getVersionArr = (str,check=false) => {
             try{
-              console.log("branch name:", str)
               const versionStr = str.match(/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/)[0]
-              console.log("Verionstring split:", versionStr)
               if (check) {
                 return true
               }
