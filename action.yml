@@ -36,6 +36,8 @@ runs:
           console.log(context)
           const os = require("os")
           const fs = require("fs")
+          import compareVersions from 'compare-versions'
+
           function setGithubOutput(key, value) {
              // Temporary hack from (https://github.com/actions/toolkit/issues/1218)
              // until core actions library catches up with github new recommendations
@@ -79,15 +81,18 @@ runs:
               return false
             }
           }
+          console.log('getVersionArr',getVersionArr)
+          const sorted = getVersionArr.sort(compareVersions)
+          console.log('sorted',sorted)
 
           const sortVersions = (a,b) => (
           getVersionArr(b.name).join('') - getVersionArr(a.name).join('')
           )
+          console.log('sortVersions',sortVersions)
 
           const getLatestDeployedReleaseTag = (tags,production_tag_sha,name) => {
             const result = tags.filter(t => (
               getVersionArr(t.name,true) && (t.commit.sha == production_tag_sha) && (t.name != name)
-              console.log(getVersionArr)
             ))
             if (!result.length) {
               console.error('!!! ERROR: Cannot find latest deployed release or hotfix tag. Please check that release-production tag sha and deployed release tag are the same.')
