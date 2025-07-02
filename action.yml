@@ -87,6 +87,7 @@ runs:
           const getLatestDeployedReleaseTag = (tags,production_tag_sha,name) => {
             const result = tags.filter(t => (
               getVersionArr(t.name,true) && (t.commit.sha == production_tag_sha) && (t.name != name)
+              console.log(getVersionArr)
             ))
             if (!result.length) {
               console.error('!!! ERROR: Cannot find latest deployed release or hotfix tag. Please check that release-production tag sha and deployed release tag are the same.')
