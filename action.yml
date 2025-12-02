@@ -79,9 +79,15 @@ runs:
             }
           }
 
-          const sortVersions = (a,b) => (
-          getVersionArr(b.name).join('') - getVersionArr(a.name).join('')
-          )
+          const sortVersions = (a, b) => {
+            const va = getVersionArr(a.name).map(Number)
+            const vb = getVersionArr(b.name).map(Number)
+            if (!va || !vb) return 0
+          
+            if (vb[0] !== va[0]) return vb[0] - va[0]
+            if (vb[1] !== va[1]) return vb[1] - va[1]
+            return vb[2] - va[2]
+          }
 
           const getLatestDeployedReleaseTag = (tags,production_tag_sha,name) => {
             const result = tags.filter(t => (
