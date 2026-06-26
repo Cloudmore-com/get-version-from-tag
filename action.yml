@@ -109,10 +109,20 @@ runs:
           const masterVersion = [m1,+m2 + 1, 0].join('.')
           console.log('masterVersion',masterVersion)
 
-          const releaseProductionTag = allTags.find(t => t.name == releaseProductionTagName)
-          console.log('releaseProductionTag',releaseProductionTag)
-        
-          const latestDeployedReleaseTag = getLatestDeployedReleaseTag(allTags,releaseProductionTag.commit.sha,releaseProductionTag.name)
+          // Check all production tags and take the highest deployed version across all regions
+          const allProductionTagNames = [releaseProductionTagName, 'release-production-eu', 'release-production-us']
+            .filter((v, i, a) => a.indexOf(v) === i)
+          const allProductionTags = allProductionTagNames
+            .map(name => allTags.find(t => t.name === name))
+            .filter(Boolean)
+          console.log('productionTags found:', allProductionTags.map(t => t.name))
+
+          const deployedReleaseTags = allProductionTags
+            .map(pt => getLatestDeployedReleaseTag(allTags, pt.commit.sha, pt.name))
+            .filter(Boolean)
+            .sort(sortVersions)
+
+          const latestDeployedReleaseTag = deployedReleaseTags[0]
           console.log('latestDeployedReleaseTag:',latestDeployedReleaseTag.name)
       
           const [a,b,c] = getVersionArr(latestDeployedReleaseTag.name)
